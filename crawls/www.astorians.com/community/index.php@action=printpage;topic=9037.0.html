@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="robots" content="noindex" />
+		<link rel="canonical" href="index.php@topic=9037.0.html" />
+		<title>Print Page - ignore user feature for Firefox</title>
+		<style type="text/css">
+			body, a
+			{
+				color: #000;
+				background: #fff;
+			}
+			body, td, .normaltext
+			{
+				font-family: Verdana, arial, helvetica, serif;
+				font-size: small;
+			}
+			h1#title
+			{
+				font-size: large;
+				font-weight: bold;
+			}
+			h2#linktree
+			{
+				margin: 1em 0 2.5em 0;
+				font-size: small;
+				font-weight: bold;
+			}
+			dl#posts
+			{
+				width: 90%;
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+			dt.postheader
+			{
+				border: solid #000;
+				border-width: 1px 0;
+				padding: 4px 0;
+			}
+			dd.postbody
+			{
+				margin: 1em 0 2em 2em;
+			}
+			table
+			{
+				empty-cells: show;
+			}
+			blockquote, code
+			{
+				border: 1px solid #000;
+				margin: 3px;
+				padding: 1px;
+				display: block;
+			}
+			code
+			{
+				font: x-small monospace;
+			}
+			blockquote
+			{
+				font-size: x-small;
+			}
+			.smalltext, .quoteheader, .codeheader
+			{
+				font-size: x-small;
+			}
+			.largetext
+			{
+				font-size: large;
+			}
+			.centertext
+			{
+				text-align: center;
+			}
+			hr
+			{
+				height: 1px;
+				border: 0;
+				color: black;
+				background-color: black;
+			}
+		</style>
+	</head>
+	<body>
+		<h1 id="title">Astorians</h1>
+		<h2 id="linktree">Shoot the Breeze => Local Chat &amp; Issues => Board Announcements &amp; Information => Topic started by: Harlan on December 31, 2007, 05:05:18 PM</h2>
+		<dl id="posts">
+			<dt class="postheader">
+				Title: <strong>ignore user feature for Firefox</strong><br />
+				Post by: <strong>Harlan</strong> on <strong>December 31, 2007, 05:05:18 PM</strong>
+			</dt>
+			<dd class="postbody">
+				Hi, periodically over the last few years, people (including myself) have asked for an &quot;ignore user&quot; feature for the board. While our esteemed leader and moderators haven&#039;t agreed to add such a feature, it is possible to fake it using a client-side script. (Server = Merm&#039;s computer, Client = Your computer.) This script, which I found on the net and then fixed, seems to work relatively well. Importantly, however, it only works for people running the Firefox (http://www.mozilla.com/firefox) web browser and the Greasemonkey extension. (Greasemonkey allows you to install scripts that over-ride the way web pages display. Pretty cool.) Here&#039;s how to install it:<br /><br /><ul class="bbc_list"><li>Make sure you&#039;re running Firefox 2.0 or later.</li><li>Install the Greasemonkey extension (https://addons.mozilla.org/en-US/firefox/addon/748). Restart Firefox. Note the cute little monkey in the lower-right corner.</li><li>Copy the script below into Notepad, and save it as a file, on your Desktop, say, called smfuserhide.user.js (yes, with two dots).</li><li>In Firefox, do a File, Open File..., and open the .js file. You&#039;ll be prompted to install the script. Say Install.</li><li>Test it! There should now be a little </li><li type="square"> next to everyone&#039;s name in a thread. To hide them, click the </li><li type="square"> and refresh the page.</li></ul><br />Let me know if you can&#039;t get it to work! I&#039;m no guru at this stuff, but I might be able to figure simple problems out...<br /><br />OK, here it is... (crossing fingers...!)<br /><br /><div class="codeheader">Code: <a href="javascript:void(0);" onclick="return smfSelectText(this);" class="codeoperation">[Select]</a></div><code class="bbc_code">// ==UserScript==<br />// @name&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SMF User Hide<br />// @include&nbsp; &nbsp; &nbsp; &nbsp;*astorians*/index.php?topic=*<br />// @description&nbsp; &nbsp;hides / unhides a user&#039;s posts - based on User Classes by Unarmed, and tweaked/debugged by Harlan<br />// @exclude<br />// ==/UserScript==<br /><br />(function() {<br />&nbsp; &nbsp;// Get stored hidden users from cookie<br />&nbsp; &nbsp;var users = &#91;];<br />&nbsp; &nbsp;var cookieName = &quot;smfUserHide&quot;;<br />&nbsp; &nbsp;for (var i = 0; i &lt; document.cookie.split(&#039;; &#039;).length; i++) {<br />&nbsp; &nbsp; &nbsp; var oneCookie = document.cookie.split(&#039;; &#039;)[i].split(&#039;=&#039;);<br />&nbsp; &nbsp; &nbsp; if (oneCookie[0] == cookieName) {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;users = oneCookie[1].split(&#039;, &#039;);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;break;<br />&nbsp; &nbsp; &nbsp; }<br />&nbsp; &nbsp;}<br /><span style="white-space: pre;">	</span>//GM_log(users);<br /><br />&nbsp; &nbsp;// Find all the usernames in the page<br />&nbsp; &nbsp;var results = document.evaluate(&quot;//td/b/a[starts-with(@title, &#039;View the profile of&#039;)]&quot;, document, null,<br />&nbsp; &nbsp; &nbsp; XPathResult.ANY_TYPE, null);<br />&nbsp; &nbsp;var resultNodes = &#91;];<br />&nbsp; &nbsp;var aResult;<br />&nbsp; &nbsp;while (aResult = results.iterateNext())<br />&nbsp; &nbsp; &nbsp; resultNodes.push(aResult);<br /><br />&nbsp; &nbsp;// Loop through every user post on the page<br />&nbsp; &nbsp;for (var i in resultNodes) {<br /><span style="white-space: pre;">	</span>//GM_log(&#039;looping through posts&#039;);<br /><br />&nbsp; &nbsp; &nbsp; var containingRow = resultNodes[i].parentNode.parentNode.parentNode;<br />&nbsp; &nbsp; &nbsp; // Format whitespace<br />&nbsp; &nbsp; &nbsp; var user = encodeURI(resultNodes[i].innerHTML);<br /><span style="white-space: pre;">	</span>//GM_log(user);<br /><br />&nbsp; &nbsp; &nbsp; // Flag whether the user is in our hide list<br />&nbsp; &nbsp; &nbsp; var notFound = true;<br />&nbsp; &nbsp; &nbsp; for (var j = 0; j &lt; users.length; j++) {<br /><span style="white-space: pre;">	</span>//GM_log(users[j]);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (users[j] == user) {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; notFound = false;<br /><span style="white-space: pre;">	</span><span style="white-space: pre;">	</span>//GM_log(&#039;user found!&#039;);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}<br />&nbsp; &nbsp; &nbsp; }<br /><br />&nbsp; &nbsp; &nbsp; // Add relevant event handlers to a &quot;[X]&quot; node in front of user&#039;s name<br />&nbsp; &nbsp; &nbsp; // On click, add or remove this user from the stored user list in the cookie<br />&nbsp; &nbsp; &nbsp; var toggler = document.createElement(&#039;span&#039;);<br />&nbsp; &nbsp; &nbsp; toggler.title = &quot;click to add or remove this user from your hide list&quot;;<br />&nbsp; &nbsp; &nbsp; toggler.appendChild(document.createTextNode(&#039;[X] &#039;));<br />&nbsp; &nbsp; &nbsp; //toggler.namenode = user;<br /><span style="white-space: pre;">	</span>//toggler.setAttribute(&#039;namenode&#039;, user); //resultNodes[i];<br /><span style="white-space: pre;">	</span>toggler.id = user;<br />&nbsp; &nbsp; &nbsp; //toggler.onmouseover = function(event) { event.target.style.cursor = &#039;pointer&#039;; };<br />&nbsp; &nbsp; &nbsp; //toggler.onmouseout = function(event) { event.target.style.cursor = &#039;default&#039;; };<br />&nbsp; &nbsp; &nbsp; toggler.addEventListener(&#039;mouseover&#039;, function(event) { event.target.style.cursor = &#039;pointer&#039;; }, true);<br />&nbsp; &nbsp; &nbsp; toggler.addEventListener(&#039;mouseout&#039;, function(event) { event.target.style.cursor = &#039;default&#039;; }, true);<br />&nbsp; &nbsp; &nbsp; toggler.style.fontSize = &quot;7pt&quot;;<br />&nbsp; &nbsp; &nbsp; //toggler.onclick = function(event) {<br />&nbsp; &nbsp; &nbsp; toggler.addEventListener(&#039;click&#039;, function(event) {<br /><span style="white-space: pre;">	</span>//GM_log(&#039;in click event&#039;);<br /><span style="white-space: pre;">	</span>//GM_log(event.target);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;for(j = 0; j &lt; document.cookie.split(&#039;; &#039;).length; j++ ) {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var oneCookie = document.cookie.split(&#039;; &#039;)[j].split(&#039;=&#039;);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (oneCookie[0] == cookieName) {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;users = oneCookie[1].split(&#039;, &#039;);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;break;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}<br /><span style="white-space: pre;">	</span>var user = event.target.id;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//var user = encodeURI(event.target.namenode);<br /><span style="white-space: pre;">	</span>//var user = encodeURI(event.target.namenode.innerHTML);<br /><span style="white-space: pre;">	</span>//GM_log(user);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;notFound = true;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;for (var j = 0; j &lt; users.length; j++) {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (users[j] == user) {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;users.splice(j, 1);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;notFound = false;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (notFound)<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; users.push(user);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (users.length &gt; 0) {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var date = new Date();<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var days = 365;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; date.setTime(date.getTime() + (days*24*60*60*1000));<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var expires = &#039;; expires=&#039; + date.toGMTString();<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var value = users.join(&#039;, &#039;);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.cookie = cookieName + &#039;=&#039; + value + expires + &#039;; path=/&#039;;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;} else {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; document.cookie = cookieName + &#039;=;expires=Thu, 01-Jan-1970 00:00:01 GMT; path=/&#039;;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;alert(decodeURI(user) + &#039; has been &#039; + (notFound ? &#039;added to&#039; : &#039;removed from&#039;)<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; + &#039; your hide list\n&#039;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; + &#039;You must refresh the page to view the changes.&#039;);<br />&nbsp; &nbsp; &nbsp; }, true);<br />&nbsp; &nbsp; &nbsp; resultNodes[i].parentNode.insertBefore(toggler, resultNodes[i]);<br /><br />&nbsp; &nbsp; &nbsp; // If this user isn&#039;t in our hide list, skip to the next user<br />&nbsp; &nbsp; &nbsp; if (notFound)<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;continue;<br /><br />&nbsp; &nbsp; &nbsp; // Find the first element node in the containing row<br />&nbsp; &nbsp; &nbsp; var elem = containingRow.firstChild;<br />&nbsp; &nbsp; &nbsp; while (elem.nodeType != 1)<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;elem = elem.nextSibling;<br /><br />&nbsp; &nbsp; &nbsp; // Create a span to control toggling<br />&nbsp; &nbsp; &nbsp; var span = document.createElement(&#039;span&#039;);<br />&nbsp; &nbsp; &nbsp; span.appendChild(document.createTextNode(&#039;Toggle Display&#039;));<br />&nbsp; &nbsp; &nbsp; span.setAttribute(&#039;class&#039;, &#039;smalltext&#039;);<br />&nbsp; &nbsp; &nbsp; span.style.textDecoration = &#039;underline&#039;;<br />&nbsp; &nbsp; &nbsp; span.style.fontWeight = &#039;bold&#039;;<br />&nbsp; &nbsp; &nbsp; span.setAttribute(&#039;displaystate&#039;, &#039;none&#039;);<br />&nbsp; &nbsp; &nbsp; toggler.addEventListener(&#039;mouseover&#039;, function(event) { event.target.style.cursor = &#039;pointer&#039;; }, true);<br />&nbsp; &nbsp; &nbsp; span.addEventListener(&#039;mouseover&#039;, function(event) { event.target.style.cursor = &#039;pointer&#039;; }, true);<br />&nbsp; &nbsp; &nbsp; span.addEventListener(&#039;mouseout&#039;, function(event) { event.target.style.cursor = &#039;default&#039;; }, true);<br />&nbsp; &nbsp; &nbsp; span.addEventListener(&#039;click&#039;,&nbsp; function(event) {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;var displayState = event.target.getAttribute(&#039;displaystate&#039;);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (displayState == &#039;none&#039;)<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; displayState = &#039;&#039;;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;else<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; displayState = &#039;none&#039;;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;event.target.setAttribute(&#039;displaystate&#039;, displayState);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// Target user information<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;elem = event.target.nextSibling;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;while (elem.nodeType != 1)<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; elem = elem.nextSibling;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (elem.getAttribute &amp;&amp; (elem.getAttribute(&#039;class&#039;) == &#039;smalltext&#039;))<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; elem.style.display = displayState;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// Target post body<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;elem = elem.parentNode.nextSibling;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;while (elem.nodeType != 1)<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; elem = elem.nextSibling;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (elem.tagName.toUpperCase() == &#039;TD&#039;)<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; elem.style.display = displayState;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// Target post footer<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;elem = elem.parentNode.nextSibling;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;while (elem.nodeType != 1)<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; elem = elem.nextSibling;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (elem.tagName.toUpperCase() == &#039;TR&#039;)<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; elem.style.display = displayState;<br />&nbsp; &nbsp; &nbsp; }, true);<br /><br />&nbsp; &nbsp; &nbsp; // Insert the span after the username and before the &lt;br&gt;<br />&nbsp; &nbsp; &nbsp; elem.insertBefore(span, elem.firstChild.nextSibling.nextSibling);<br />&nbsp; &nbsp; &nbsp; // Insert a &lt;br&gt; after the username and before the span<br />&nbsp; &nbsp; &nbsp; elem.insertBefore(document.createElement(&#039;br&#039;), elem.firstChild.nextSibling.nextSibling);<br /><br />&nbsp; &nbsp; &nbsp; // Crawl down and remove the postdetails span<br />&nbsp; &nbsp; &nbsp; elem = elem.firstChild;<br />&nbsp; &nbsp; &nbsp; while (elem) {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (elem.getAttribute &amp;&amp; elem.tagName.toUpperCase() == &#039;DIV&#039;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &amp;&amp; elem.getAttribute(&#039;class&#039;) == &#039;smalltext&#039;)<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; elem.style.display = &#039;none&#039;;<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;elem = elem.nextSibling;<br />&nbsp; &nbsp; &nbsp; }<br /><br />&nbsp; &nbsp; &nbsp; // Reset the elem pointer to the first table cell in the row<br />&nbsp; &nbsp; &nbsp; elem = containingRow.firstChild;<br />&nbsp; &nbsp; &nbsp; while (elem.nodeType != 1)<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;elem = elem.nextSibling;<br /><br />&nbsp; &nbsp; &nbsp; // Move to the next table cell in the row<br />&nbsp; &nbsp; &nbsp; elem = elem.nextSibling;<br />&nbsp; &nbsp; &nbsp; while (elem.nodeType != 1)<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;elem = elem.nextSibling;<br /><br />&nbsp; &nbsp; &nbsp; // Move inside that table cell and remove the postbody and postsig spans<br />&nbsp; &nbsp; &nbsp; if (elem.tagName.toUpperCase() == &#039;TD&#039;)<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;elem.style.display = &#039;none&#039;;<br />&nbsp; &nbsp; &nbsp; elem = elem.parentNode.nextSibling;<br />&nbsp; &nbsp; &nbsp; while (elem.nodeType != 1)<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;elem = elem.nextSibling;<br />&nbsp; &nbsp; &nbsp; if (elem.tagName.toUpperCase() == &#039;TR&#039;)<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;elem.style.display = &#039;none&#039;;<br />&nbsp; &nbsp;}<br />})();<br /></code><br />
+			</dd>
+			<dt class="postheader">
+				Title: <strong>Re: ignore user feature for Firefox</strong><br />
+				Post by: <strong>NYCMacUser</strong> on <strong>December 31, 2007, 05:46:39 PM</strong>
+			</dt>
+			<dd class="postbody">
+				Will this work for Macs?<br /><br />::crossing fingers and silently praying::
+			</dd>
+			<dt class="postheader">
+				Title: <strong>Re: ignore user feature for Firefox</strong><br />
+				Post by: <strong>Harlan</strong> on <strong>December 31, 2007, 11:34:29 PM</strong>
+			</dt>
+			<dd class="postbody">
+				<div class="quoteheader"><div class="topslice_quote"><a href="index.php@topic=9037.msg106920.html#msg106920">Quote from: NYCMacUser on December 31, 2007, 05:46:39 PM</a></div></div><blockquote class="bbc_standard_quote">Will this work for Macs?<br /><br />::crossing fingers and silently praying::<br /></blockquote><div class="quotefooter"><div class="botslice_quote"></div></div><br />I have no idea. I think it should work on anything you can run Firefox and Greasemonkey on. Give it a shot and let us know...! :)
+			</dd>
+		</dl>
+		<div id="footer" class="smalltext">
+			
+			<span class="smalltext" style="display: inline; visibility: visible; font-family: Verdana, Arial, sans-serif;"><a href="index.php@action=credits.html" title="Simple Machines Forum" target="_blank" class="new_win">SMF 2.0.11</a> |
+ <a href="http://www.simplemachines.org/about/smf/license.php" title="License" target="_blank" class="new_win">SMF &copy; 2015</a>, <a href="http://www.simplemachines.org" title="Simple Machines" target="_blank" class="new_win">Simple Machines</a><br /><span class="smalltext"><a href="http://www.smfads.com" target="_blank">SMFAds</a> for <a href="http://www.createaforum.com" title="Forum Hosting">Free Forums</a></span>
+			</span>
+		</div>
+	</body>
+</html>

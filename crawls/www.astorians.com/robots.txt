@@ -1,0 +1,16 @@
+User-agent: *
+Disallow: /community/index.php?action
+Disallow: /community/index.php?wap
+Disallow: /community/index.php?wap2
+Disallow: /community/index.php?imode
+Disallow: /community/index.php?type=rss
+Disallow: /community/index.php*msg
+Disallow: /community/index.php*sort
+Disallow: /community/index.php*prev_next
+Disallow: /community/index.php?PHPSESSID=*
+Disallow: /community/Smileys
+Disallow: /community/Themes
+
+User-agent: Googlebot-Mobile
+Allow: /community/index.php?wap
+Allow: /community/index.php?wap2
